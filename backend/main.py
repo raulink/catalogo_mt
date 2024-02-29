@@ -11,6 +11,7 @@ from middlewares.error_handler import ErrorHandler  # Importamos el middleware d
 from routers.movie import movie_router
 from routers.user import user_router
 from routers.catalogo import catalogo_router
+from routers.images import images_router
 
 # Creamos la instancia de la aplicación FastAPI
 app = FastAPI()
@@ -26,6 +27,7 @@ app.add_middleware(ErrorHandler)  # Añadimos el middleware de gestión de error
 app.include_router(movie_router)  # Incluimos el router de películas
 app.include_router(user_router)   # Incluimos el router de usuarios
 app.include_router(catalogo_router)  # Incluimos el router de películas
+app.include_router(images_router)  # Incluimos el router de imagenes
 
 # Creamos todas las tablas en la base de datos a partir de los modelos definidos en otro lugar
 #Base.metadata.create_all(bind=engine)  # Creamos las tablas de la base de datos a partir de los modelos
