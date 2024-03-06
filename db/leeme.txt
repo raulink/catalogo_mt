@@ -1,0 +1,8 @@
+--ejecutar despues de cambiar de base de datos la tabla
+
+--secuencia creada 
+CREATE SEQUENCE id_sequence;
+
+--aplicar secuencia en la tabla
+ALTER TABLE "catalogoMT"
+ALTER COLUMN id SET DEFAULT nextval('id_sequence');
