@@ -8,13 +8,10 @@ class Categorias:
     @classmethod
     def from_json(cls,json_data):
         return Categorias(json_data['id'],json_data['nombre']) 
- 
-
 
 def main(page:ft.Page):
     #page.window_title_bar_hidden = True
     #page.window_title_bar_buttons_hidden = True
-
 
     # Crea los campos del formulario
     id_field = ft.TextField(label="ID", max_length=255)
@@ -149,7 +146,4 @@ def main(page:ft.Page):
                 ]
             ), 
     )
-
-
-
 ft.app(target=main)
