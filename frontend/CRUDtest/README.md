@@ -6,3 +6,6 @@
 
 Obtenido desde: 
 https://github.com/bobwatcherx/FletCRUDSchollapp/blob/master/README.md
+
+
+Al inicio se tenia problemas con insertar datos, es que no se tenia los permisos de escritura en el archivo, se crea nuevo archivo, y se prueba utilizando sqlite3 creando manualmente

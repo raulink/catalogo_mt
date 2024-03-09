@@ -22,38 +22,35 @@ def main(page:Page):
 		page.update()
 
 	def savedata(e):
-		#try:
-			# INPUT TO DATABASE
-		c = conn.cursor()
-		c.execute("INSERT INTO users (name,age,contact,email,address,gender) VALUES(?,?,?,?,?,?)",(name.value,age.value,contact.value,email.value,address.value,gender.value))
-		print("INSERT INTO users (name,age,contact,email,address,gender) VALUES(?,?,?,?,?,?)",(name.value,age.value,contact.value,email.value,address.value,gender.value))
-		conn.commit()
-		c.commit()
-		print("success")
+    	
+        # INPUT TO DATABASE
+			c = conn.cursor()
+			c.execute("INSERT INTO users (name, age, contact, email, address, gender) VALUES (?, ?, ?, ?, ?, ?)",
+					(name.value, age.value, contact.value, email.value, address.value, gender.value))
+			
+			print("INSERT INTO users (name, age, contact, email, address, gender) VALUES (?, ?, ?, ?, ?, ?)",name.value, age.value, contact.value, email.value, address.value, gender.value)
+			conn.commit()
+			print("Data saved successfully")
 
-		# AND SLIDE RIGHT AGAIN IF FINAL INPUT SUUCESS
-		inputcon.offset = transform.Offset(2,0)
+			# AND SLIDE RIGHT AGAIN IF FINAL INPUT SUCCESS
+			inputcon.offset = transform.Offset(2, 0)
 
-		# ADD SNACKBAR IF SUCCESS INPUT TO DATABASE
-
-		page.snack_bar = SnackBar(
-			Text("success INPUT"),
-			bgcolor="green"
+			# ADD SNACKBAR IF SUCCESS INPUT TO DATABASE
+			page.snack_bar = SnackBar(
+				Text("Data saved successfully"),
+				bgcolor="green"
 			)
+			page.snack_bar.open = True
 
-		page.snack_bar.open = True
+			# REFRESH TABLE
+			tb.rows.clear()
+			calldb()
+			tb.update()
+			page.update()
 
-		# REFRESH TABLE
-		tb.rows.clear()
-		calldb()
-		tb.update()
-		page.update()
+   	  
+        # Handle exception appropriately, e.g., display an error message to the user
 
-
-		''' except Exception as e:
-			print("Error al guardar nuevo registro")
-			print(e)
- '''
 	# CREATE FIELD FOR INPUT
 
 	name = TextField(label="name")

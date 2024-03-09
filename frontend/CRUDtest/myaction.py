@@ -16,3 +16,7 @@ def create_table():
 		address TEXT)
 		""")
 	conn.commit()
+	
+
+	#c.execute("INSERT INTO users (name, age, contact, email, address, gender) VALUES (?, ?, ?, ?, ?, ?)", ("Raul", 25, "asdfasdf", "asdf","asdfsdf","woman"))
+	#conn.commit()
