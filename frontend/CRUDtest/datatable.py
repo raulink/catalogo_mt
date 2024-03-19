@@ -1,48 +1,53 @@
 from flet import *
 import flet as ft
-import sqlite3
-conn = sqlite3.connect('db/dbone.db', check_same_thread=False)
+# import sqlite3
 
+import requests
 
 tb = DataTable(
     columns=[
         DataColumn(Text("Acciones")),
-        DataColumn(Text("Nombre")),
-        DataColumn(Text("Edad")),
-        DataColumn(Text("Contacto")),
-        DataColumn(Text("correo")),
-        DataColumn(Text("Direccion")),
-        DataColumn(Text("Genero")),
+        DataColumn(Text("Descripcion")),
+        DataColumn(Text("Categoria")),
+        DataColumn(Text("Rating")),
+        DataColumn(Text("Titulo")),
+        DataColumn(Text("Año")),
     ],
     rows=[]
 )
 
 
 def showdelete(e):
+    """Deletes a movie using the provided ID and updates the table."""
     try:
         myid = int(e.control.data)
-        c = conn.cursor()
-        c.execute("DELETE FROM users WHERE id=?", (myid,))
-        conn.commit()
-        print("success delete")
+
+        # Send DELETE request to the API
+        url = f"http://127.0.0.1:8000/movies/{myid}"
+        response = requests.delete(url)
+        response.raise_for_status()  # Raise exception for error responses
+
+        print("Movie deleted successfully!")
+
+        # Clear existing rows and fetch data again
         tb.rows.clear()
-        calldb()
+        call_api()
         tb.update()
 
+    except requests.exceptions.RequestException as err:
+        print(f"Error deleting movie (ID: {myid}): {err}")
     except Exception as e:
-        print(e)
+        print(f"An unexpected error occurred: {e}")
 
 
 id_edit = Text()
-name_edit = TextField(label="name")
-age_edit = TextField(label="age")
-contact_edit = TextField(label="contact")
-gender_edit = RadioGroup(content=Column([
-    Radio(value="man", label="man"),
-    Radio(value="woman", label="woman"),
-]))
-email_edit = TextField(label="email")
-address_edit = TextField(label="address")
+overview_edit = TextField(label="Overview")
+category_edit = TextField(label="Category")
+rating_edit = TextField(label="Rating")
+title_edit = TextField(label="Title")
+year_edit = TextField(label="Year")
+
+# Ocultar datos edicion
 
 
 def hidedlg(e):
@@ -50,22 +55,38 @@ def hidedlg(e):
     dlg.update()
 
 
-# Actualizar y guardar
 def updateandsave(e):
     try:
         myid = id_edit.value
-        c = conn.cursor()
-        c.execute("UPDATE users SET name=?, contact=?, age=?, gender=?, email=?, address=? WHERE id=?", (name_edit.value,
-                  contact_edit.value, age_edit.value, gender_edit.value, email_edit.value, address_edit.value, myid))
-        conn.commit()
-        print("success Edit ")
+
+        # Gather updated data from fields
+        data = {
+            "id": myid,  # Ensure ID is included in the request body
+            "title": title_edit.value,
+            "overview": overview_edit.value,
+            "year": year_edit.value,
+            "rating": rating_edit.value,
+            "category": category_edit.value
+        }
+
+        # Send PUT request to API
+        url = f"http://127.0.0.1:8000/movies/{myid}"
+        response = requests.put(url, json=data)
+        response.raise_for_status()  # Raise exception for error responses
+
+        print("Movie updated successfully!")
+
+        # Clear existing rows and fetch data again
         tb.rows.clear()
-        calldb()
+        call_api()
         dlg.visible = False
         dlg.update()
         tb.update()
+
+    except requests.exceptions.RequestException as err:
+        print(f"Error updating movie (ID: {myid}): {err}")
     except Exception as e:
-        print(e)
+        print(f"An unexpected error occurred: {e}")
 
 
 dlg = Container(
@@ -76,71 +97,78 @@ dlg = Container(
         Row([
             Text("Formulario de edicion", size=30, weight="bold"),
             IconButton(icon="close", on_click=hidedlg),
-        ], alignment="spaceBetween"),
-        name_edit,
-        age_edit,
-        contact_edit,
-        Text("Seleccionar Genero", size=20, weight="bold"),
-        gender_edit,
-        email_edit,
-        address_edit,
-        ElevatedButton("Actualizar", on_click=updateandsave)
+        ]),#, alignment="spaceBetween"
+        id_edit,
+        overview_edit,
+        category_edit,
+        rating_edit,
+        title_edit,
+        year_edit,
 
+        ElevatedButton("Actualizar", on_click=updateandsave)
     ])
 )
 
-
+# Mostrar datos de edicion
 def showedit(e):
     data_edit = e.control.data
     id_edit.value = data_edit['id']
-    name_edit.value = data_edit['name']
-    age_edit.value = data_edit['age']
-    contact_edit.value = data_edit['contact']
-    gender_edit.value = data_edit['gender']
-    email_edit.value = data_edit['email']
-    address_edit.value = data_edit['address']
+    title_edit.value = data_edit['title']
+    overview_edit.value = data_edit['overview']
+    year_edit.value = data_edit['year']
+    rating_edit.value = data_edit['rating']
+    category_edit.value = data_edit['category']
 
     dlg.visible = True
     dlg.update()
 
 # Obtener datos de la base de datos
-def calldb():
-    c = conn.cursor()
-    c.execute("SELECT * FROM users")
-    users = c.fetchall()
-    print(users)
-    if not users == "":
-        keys = ['id', 'name', 'contact', 'age', 'gender', 'email', 'address']
-        result = [dict(zip(keys, values)) for values in users]
-        for x in result:
-            tb.rows.append(
-                DataRow(
-                    cells=[
-                        DataCell(Row([
-                            IconButton(icon="create", icon_color="blue",
-                                       data=x,
-                                       on_click=showedit
+def call_api():
+    """Sends a request to the API and processes the response."""
 
-                                       ),
-                            IconButton(icon="delete", icon_color="red",
-                                       data=x['id'],
-                                       on_click=showdelete
+    try:
+        response = requests.get("http://127.0.0.1:8000/movies")
+        response.raise_for_status()  # Raise an exception for error responses
 
-                                       ),
-                        ])),
-                        DataCell(Text(x['name'])),
-                        DataCell(Text(x['age'])),
-                        DataCell(Text(x['contact'])),
-                        DataCell(Text(x['email'])),
-                        DataCell(Text(x['address'])),
-                        DataCell(Text(x['gender'])),
-                    ],
-                ),
+        movies = response.json()  # Assuming the API response is in JSON format
+        print(movies)
 
-            )
+        if movies:
+            #keys = ['id', 'overview', 'category', 'rating', 'title', 'year']
+            #result = [dict(zip(keys, values)) for values in movies]
+            for x in movies:
+                print (x)
+                tb.rows.append(
+                    DataRow(
+                        cells=[
+                            DataCell(Row([
+                                IconButton(icon="create", icon_color="blue",
+                                           data=x,
+                                           on_click=showedit
+                                           ),
+                                IconButton(icon="delete", icon_color="red",
+                                           data=x['id'],
+                                           on_click=showdelete
+
+                                           ),
+                            ])),
+                            #DataCell(Text(x['id'])),
+                            DataCell(Text(x['overview'])),
+                            DataCell(Text(x['category'])),
+                            DataCell(Text(x['rating'])),
+                            DataCell(Text(x['title'])),
+                            DataCell(Text(x['year'])),
+                        ],
+                    ),
+
+                )
+
+    except requests.exceptions.RequestException as err:
+        print("Error fetching data from API:", err)
+        # Handle the error gracefully, e.g., display an error message
 
 
-calldb()
+call_api()
 
 
 dlg.visible = False
