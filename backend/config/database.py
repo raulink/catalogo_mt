@@ -5,11 +5,11 @@ from sqlalchemy.ext.declarative import declarative_base     # Crear la instancia
 from sqlalchemy.orm import sessionmaker
 
 # Replace with your actual connection details
-DATABASE_HOST = "localhost"
-DATABASE_PORT = 5434
-DATABASE_USER = "openpg"
-DATABASE_PASSWORD = "openpgpwd"
-DATABASE_NAME = "catalogo"
+DATABASE_HOST = "zona1.miteleferico.bo"
+DATABASE_PORT = 5432
+DATABASE_USER = "postgres"
+DATABASE_PASSWORD = "postgres"
+DATABASE_NAME = "Proy_Catalogo"
 
 # Build the connection string
 DATABASE_URL = f"postgresql://{DATABASE_USER}:{DATABASE_PASSWORD}@{DATABASE_HOST}:{DATABASE_PORT}/{DATABASE_NAME}"

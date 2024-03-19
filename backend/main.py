@@ -30,7 +30,7 @@ app.include_router(catalogo_router)  # Incluimos el router de películas
 app.include_router(images_router)  # Incluimos el router de imagenes
 
 # Creamos todas las tablas en la base de datos a partir de los modelos definidos en otro lugar
-#Base.metadata.create_all(bind=engine)  # Creamos las tablas de la base de datos a partir de los modelos
+Base.metadata.create_all(bind=engine)  # Creamos las tablas de la base de datos a partir de los modelos
 
 # Definimos un endpoint raíz para la aplicación
 @app.get('/', tags=['home'])
