@@ -13,7 +13,7 @@ from schemas.movie import Movie
 movie_router = APIRouter()
 
 
-@movie_router.get('/movies', tags=['movies'], response_model=List[Movie], status_code=200, dependencies=[Depends(JWTBearer())])
+@movie_router.get('/movies', tags=['movies'], response_model=List[Movie], status_code=200 )#, dependencies=[Depends(JWTBearer())])
 def get_movies() -> List[Movie]:
     db = Session()
     result = MovieService(db).get_movies()

@@ -46,7 +46,7 @@ def main(page: Page):
                 uf.append(
                     FilePickerUploadFile(
                         f.name,
-                        upload_url=page.get_upload_url(f.name, 600),
+                        upload_url=page.get_upload_url(f.name,600),
                     )
                 )
             file_picker.upload(uf)

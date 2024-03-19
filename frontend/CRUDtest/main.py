@@ -9,8 +9,7 @@ conn = sqlite3.connect("db/dbone.db",check_same_thread=False)
 def main(page:Page):
 
 	# AND RUN SCRIPT FOR CREATE TABLE WHEN FLET FIRST RUN
-	create_table()
-
+	# create_table()
 	page.scroll = "auto"
 
 	def showInput(e):
@@ -20,7 +19,7 @@ def main(page:Page):
 	def hidecon(e):
 		inputcon.offset = transform.Offset(2,0)
 		page.update()
-
+	# Update
 	def savedata(e):
     	
         # INPUT TO DATABASE
@@ -97,8 +96,8 @@ def main(page:Page):
 
 	page.add(
 	Column([
-		Text("SCHOLL APP",size=30,weight="bold"),
-		ElevatedButton("add new data",
+		Text("REGISTRO PELICULAS",size=30,weight="bold"),
+		ElevatedButton("Añadir Registro",
 		on_click=showInput
 		),
 		mytable,
